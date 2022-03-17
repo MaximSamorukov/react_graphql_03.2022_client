@@ -5,7 +5,18 @@ import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
 
 class UserList extends Component {
-
+  deleteUser(id) {
+    this.props.mutate({
+      variables: {
+        id
+      },
+      refetchQueries: [
+        {
+          query
+        }
+      ]
+    })
+  }
   render() {
     const { users, loading } = this.props.data;
     return (
@@ -28,13 +39,13 @@ class UserList extends Component {
             <Spin />
           </div>
         )}
-        { users?.map(({ id, firstName, secondName, occupation, age }) => (
+        { users?.map(({ id, firstName, secondName, occupation, age, city, country }) => (
           <div key={id} style={{
             border: '1px solid green',
             margin: 5,
             padding: 10,
           }}>
-            <Link to={`/user/${id}`}>
+            <Link style={{ color: 'black' }} to={`/user/${id}`}>
               <div>
                 <span>id: </span>
                 <span><b>{id}</b></span>
@@ -55,7 +66,16 @@ class UserList extends Component {
                 <span>age: </span>
                 <span><b>{age}</b></span>
               </div>
+              <div>
+                <span>city: </span>
+                <span><b>{city}</b></span>
+              </div>
+              <div>
+                <span>country: </span>
+                <span><b>{country}</b></span>
+              </div>
             </Link>
+            <button onClick={() => this.deleteUser(id)}>Delete User</button>
           </div>
         ))}
       </div>
@@ -77,4 +97,17 @@ const query = gql`
   }
 `;
 
-export default graphql(query)(UserList);
+const mutation = gql`
+  mutation deleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      firstName,
+      secondName,
+      age,
+      occupation,
+      city,
+      country
+    }
+  }
+`;
+
+export default graphql(mutation)(graphql(query)(UserList));

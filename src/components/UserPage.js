@@ -5,12 +5,10 @@ import gql from "graphql-tag";
 import { Spin } from "antd";
 import { Link } from "react-router-dom";
 
-const UserPage = ({ data }) => {
+const UserPage = ({ data: { user, loading, refetch } }) => {
   const { id } = useParams();
-  data.refetch({ id });
-  const { user } = data;
-  if (user) {
-    const { firstName, secondName, age, city, country, occupation, id: userId } = data?.user;
+  refetch({ id })
+  if (!loading) {
     return (
       <div style={{
         border: '1px solid green',
@@ -20,27 +18,13 @@ const UserPage = ({ data }) => {
         marginTop: 10,
         padding: 10,
       }}>
-        <div>
-          <span>id: <b>{userId}</b></span>
-        </div>
-        <div>
-          <span>first name: <b>{firstName}</b></span>
-        </div>
-        <div>
-          <span>second name: <b>{secondName}</b></span>
-        </div>
-        <div>
-          <span>age: <b>{age}</b></span>
-        </div>
-        <div>
-          <span>city: <b>{city}</b></span>
-        </div>
-        <div>
-          <span>country: <b>{country}</b></span>
-        </div>
-        <div>
-          <span>occupation: <b>{occupation}</b></span>
-        </div>
+        {
+          Object.keys(user).map((item, index) => (
+            <div key={`${user[item]}${index}`}>
+              <span>{`${item}: `}<b>{user[item]}</b></span>
+            </div>
+          ))
+        }
         <div>
           <Link to="/">Back</Link>
         </div>
@@ -68,7 +52,7 @@ const UserPage = ({ data }) => {
 }
 
 const query = gql`
-  query ($id: ID!) {
+  query fetchUser($id: ID!) {
     user(id: $id) {
       id,
       firstName,
