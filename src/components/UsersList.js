@@ -3,13 +3,31 @@ import gql from 'graphql-tag';
 import { graphql } from "react-apollo";
 import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
-
+import UpdateUserModal from './UpdateUserModal';
 class UserList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {},
+      visible: false,
+    }
+  }
+
   deleteUser(id) {
     this.props.mutate({
       variables: {
         id
       },
+      refetchQueries: [
+        {
+          query
+        }
+      ]
+    })
+  }
+  updateUser(variables) {
+    this.props.mutate({
+      variables,
       refetchQueries: [
         {
           query
@@ -76,6 +94,14 @@ class UserList extends Component {
               </div>
             </Link>
             <button onClick={() => this.deleteUser(id)}>Delete User</button>
+            <button onClick={() => this.setState({ visible: true })}>Update User</button>
+            <UpdateUserModal
+              userData={{ id, firstName, secondName, occupation, age, city, country }}
+              title="Update User"
+              visible={this.state.visible}
+              onCancel={() =>  this.setState({ visible: false })}
+              onOk={() =>  this.setState({ visible: false })}
+            />
           </div>
         ))}
       </div>
@@ -110,4 +136,6 @@ const mutation = gql`
   }
 `;
 
-export default graphql(mutation)(graphql(query)(UserList));
+export default
+  graphql(mutation)(
+    graphql(query)(UserList));

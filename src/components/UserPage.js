@@ -5,9 +5,7 @@ import gql from "graphql-tag";
 import { Spin } from "antd";
 import { Link } from "react-router-dom";
 
-const UserPage = ({ data: { user, loading, refetch } }) => {
-  const { id } = useParams();
-  refetch({ id })
+const UserPage = ({ id, data: { loading, user } }) => {
   if (!loading) {
     return (
       <div style={{
@@ -66,9 +64,11 @@ const query = gql`
 `;
 
 export default graphql(query, {
-  options: {
-    variables: {
-      id: '',
+  options: (props) => {
+    return {
+      variables: {
+        id: props.id,
+      }
     }
   }
 })(UserPage);

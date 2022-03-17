@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import UserPage from './components/UserPage';
+import UserPageWrapper from './components/UserPageWrapper';
 import ApolloClient from 'apollo-boost';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from 'react-apollo';
@@ -18,7 +18,7 @@ const Root = () => {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<App />} />
-          <Route path='/user/:id' element={<UserPage />} />
+          <Route path='/user/:id' element={<UserPageWrapper />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>
