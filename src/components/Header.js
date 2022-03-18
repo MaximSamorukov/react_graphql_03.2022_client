@@ -36,6 +36,7 @@ const Header = (props) => {
         onCancel={() => setVisible(false)}
         title="Add User"
         width={400}
+        destroyOnClose
       >
         <Form
           ref={form}

@@ -1,18 +1,26 @@
 import React, { useRef } from "react";
 import gql from 'graphql-tag';
 import { graphql } from "react-apollo";
-import { Link } from 'react-router-dom';
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
+import _ from 'lodash';
 
 const UpdateUserModal = (props) => {
-  const form = useRef();
+  const formUpdate = useRef();
   const { userData, title, visible, onCancel, onOk } = props;
   const onFinish = (values) => {
-    console.log(values)
-    //props.mutate({
-    //  variables: values,
-    //});
-    //onCancel();
+    props.mutate({
+      variables: {
+        id: userData.id,
+        ...values,
+      },
+      refetchQueries: [
+        {
+          query
+        }
+      ]
+    });
+    formUpdate.current.resetFields();
+    onCancel();
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -25,9 +33,10 @@ const UpdateUserModal = (props) => {
       onCancel={onCancel}
       onOk={onOk}
       width={400}
+      destroyOnClose
     >
       <Form
-        ref={form}
+        ref={formUpdate}
         name="updateUser"
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
@@ -114,4 +123,18 @@ mutation updateUser($id: ID!, $firstName: String, $secondName: String, $age: Int
 }
 `;
 
-export default graphql(update)(UpdateUserModal);
+const query = gql`
+  {
+    users {
+      id,
+      firstName,
+      secondName,
+      occupation,
+      age,
+      city,
+      country,
+    }
+  }
+`;
+
+export default graphql(query)(graphql(update)(UpdateUserModal));

@@ -94,16 +94,19 @@ class UserList extends Component {
               </div>
             </Link>
             <button onClick={() => this.deleteUser(id)}>Delete User</button>
-            <button onClick={() => this.setState({ visible: true })}>Update User</button>
-            <UpdateUserModal
-              userData={{ id, firstName, secondName, occupation, age, city, country }}
-              title="Update User"
-              visible={this.state.visible}
-              onCancel={() =>  this.setState({ visible: false })}
-              onOk={() =>  this.setState({ visible: false })}
-            />
+            <button onClick={() => {
+              this.setState({ user: { id, firstName, secondName, occupation, age, city, country }})
+              this.setState({ visible: true });
+            }}>Update User</button>
           </div>
         ))}
+        <UpdateUserModal
+          userData={this.state.user}
+          title="Update User"
+          visible={this.state.visible}
+          onCancel={() =>  this.setState({ visible: false })}
+          onOk={() =>  this.setState({ visible: false })}
+        />
       </div>
     )
   }
