@@ -1,13 +1,15 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import gql from 'graphql-tag';
-import { graphql, Mutation } from "react-apollo";
+import { Mutation } from "react-apollo";
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
 
 const AddPostModal = (props) => {
+  const [postData, setPostData] = useState({});
   const addPostForm = useRef();
   const { userId, title, visible, onCancel, onOk } = props;
   const onFinish = (addPost) => (values) => {
-    addPost(values);
+    setPostData(values);
+    addPost();
     addPostForm.current.resetFields();
     onCancel();
   };
@@ -27,12 +29,7 @@ const AddPostModal = (props) => {
       <Mutation
         mutation={addPost}
         variables={{
-          title: '$title',
-          description: '$description',
-          content: '$content',
-          date: '$date',
-          city: '$city',
-          country: '$country',
+          ...postData,
           userId,
         }}
       >
@@ -121,4 +118,4 @@ const addPost = gql`
   }
 `;
 
-export default graphql(addPost)(AddPostModal);
+export default AddPostModal;
