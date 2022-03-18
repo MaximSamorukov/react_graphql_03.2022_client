@@ -1,16 +1,25 @@
 import React, { Component } from "react";
 import gql from 'graphql-tag';
-import { graphql } from "react-apollo";
+import { graphql, Mutation } from "react-apollo";
 import { Spin } from 'antd';
 import { Link } from 'react-router-dom';
 import UpdateUserModal from './UpdateUserModal';
+import AddPostModal from "./AddPostModal";
 class UserList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       user: {},
       visible: false,
+      addPostModalVisible: false,
     }
+  }
+  getPostsData(id) {
+    this.props.mutate({
+      variables: {
+        id
+      },
+    })
   }
 
   deleteUser(id) {
@@ -33,6 +42,20 @@ class UserList extends Component {
           query
         }
       ]
+    })
+  }
+  addNewPost() {
+    console.log(this.props);
+    this.props.mutate({
+      variables: {
+        title: '$title',
+        description: '$description',
+        content: '$content',
+        date: '$date',
+        city: '$city',
+        country: '$country',
+        userId: '62347520d849de46292238ba'
+      },
     })
   }
   render() {
@@ -98,6 +121,8 @@ class UserList extends Component {
               this.setState({ user: { id, firstName, secondName, occupation, age, city, country }})
               this.setState({ visible: true });
             }}>Update User</button>
+            <button onClick={() => this.setState({ addPostModalVisible: true, user: { id, firstName, secondName, occupation, age, city, country }})}>Add Post</button>
+            <button onClick={() => {}}>Show Posts</button>
           </div>
         ))}
         <UpdateUserModal
@@ -107,10 +132,34 @@ class UserList extends Component {
           onCancel={() =>  this.setState({ visible: false })}
           onOk={() =>  this.setState({ visible: false })}
         />
+        <AddPostModal
+          userId={this.state.user.id}
+          title="Add Post"
+          visible={this.state.addPostModalVisible}
+          onCancel={() =>  this.setState({ addPostModalVisible: false })}
+          onOk={() =>  this.setState({ addPostModalVisible: false })}
+        />
       </div>
     )
   }
 }
+
+const getPostsByUserId = gql`
+  query user($id: ID!) {
+    user(id: $id) {
+      id,
+      posts {
+        id,
+        title,
+        description,
+        content,
+        date,
+        city,
+        country
+      }
+    }
+  }
+`;
 
 const query = gql`
   {
@@ -140,5 +189,5 @@ const mutation = gql`
 `;
 
 export default
-  graphql(mutation)(
-    graphql(query)(UserList));
+    graphql(mutation)(
+      graphql(query)(UserList));

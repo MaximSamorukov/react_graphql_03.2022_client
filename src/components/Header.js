@@ -29,7 +29,7 @@ const Header = (props) => {
         <Button
           type="primary"
           onClick={() => setVisible(true)}
-        >Add</Button>
+        >Add User</Button>
       </div>
       <Modal
         visible={visible}

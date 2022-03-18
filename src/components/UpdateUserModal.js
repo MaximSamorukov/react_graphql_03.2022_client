@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import gql from 'graphql-tag';
 import { graphql } from "react-apollo";
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
-import _ from 'lodash';
 
 const UpdateUserModal = (props) => {
   const formUpdate = useRef();
