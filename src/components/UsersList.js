@@ -44,20 +44,7 @@ class UserList extends Component {
       ]
     })
   }
-  addNewPost() {
-    console.log(this.props);
-    this.props.mutate({
-      variables: {
-        title: '$title',
-        description: '$description',
-        content: '$content',
-        date: '$date',
-        city: '$city',
-        country: '$country',
-        userId: '62347520d849de46292238ba'
-      },
-    })
-  }
+
   render() {
     const { users, loading } = this.props.data;
     return (
@@ -80,7 +67,7 @@ class UserList extends Component {
             <Spin />
           </div>
         )}
-        { users?.map(({ id, firstName, secondName, occupation, age, city, country }) => (
+        { users?.map(({ id, firstName, secondName, occupation, age, city, country, posts }) => (
           <div key={id} style={{
             border: '1px solid green',
             margin: 5,
@@ -114,6 +101,10 @@ class UserList extends Component {
               <div>
                 <span>country: </span>
                 <span><b>{country}</b></span>
+              </div>
+              <div>
+                <span>posts: </span>
+                <span><b>{posts.length}</b></span>
               </div>
             </Link>
             <button onClick={() => this.deleteUser(id)}>Delete User</button>
@@ -171,6 +162,9 @@ const query = gql`
       age,
       city,
       country,
+      posts {
+        id,
+      }
     }
   }
 `;

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import gql from 'graphql-tag';
-import { Mutation } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
 
 const AddPostModal = (props) => {
@@ -32,6 +32,11 @@ const AddPostModal = (props) => {
           ...postData,
           userId,
         }}
+        refetchQueries={[
+          {
+            query,
+          }
+        ]}
       >
         {(addPostMutation) => (
           <Form
@@ -114,6 +119,23 @@ const addPost = gql`
       date,
       city,
       country
+    }
+  }
+`;
+
+const query = gql`
+  {
+    users {
+      id,
+      firstName,
+      secondName,
+      occupation,
+      age,
+      city,
+      country,
+      posts {
+        id
+      }
     }
   }
 `;

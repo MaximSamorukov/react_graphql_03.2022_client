@@ -128,6 +128,9 @@ const query = gql`
       age,
       city,
       country,
+      posts {
+        id
+      }
     }
   }
 `;
