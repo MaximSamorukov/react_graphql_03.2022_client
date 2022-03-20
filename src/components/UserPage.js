@@ -5,9 +5,13 @@ import { Spin, Modal } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import UpdateUserModal from './UpdateUserModal';
 import AddPostModal from "./AddPostModal";
+import UpdatePostModal from "./UpdatePostModal";
 
 const UserPage = ({ id, data: { loading, user } }) => {
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
+  const [ updatePostModalVisible, setUpdatePostModalVisisble ] = useState(false);
+  const [ currentPost, setCurrentPost ] = useState({});
+  const [ postToDelete, setPostToDelete ] = useState(null);
   const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
   const [ deletePostModalVisible, setDeletePostVisible ] = useState(false);
   const [ deleteUserModalVisible, setDeleteUserVisible ] = useState(false);
@@ -123,7 +127,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
             <Mutation
               mutation={deletePost}
               variables={{
-                id,
+                id: postToDelete?.id,
               }}
               refetchQueries={[{
                 query,
@@ -181,13 +185,21 @@ const UserPage = ({ id, data: { loading, user } }) => {
                       <span>created: </span>
                       <span><b>{created}</b></span>
                     </div>
-                    <button onClick={() => setDeletePostVisible(true)}>
+                    <button onClick={() => {
+                      setPostToDelete({ id, title });
+                      setDeletePostVisible(true)
+                    }}>
                       Delete Post
                     </button>
-                    <button>Update Post</button>
+                    <button onClick={() => {
+                      setCurrentPost({ id, title, description, content, date, city, country, created, user });
+                      setUpdatePostModalVisisble(true);
+                    }}>
+                      Update Post
+                    </button>
                   </div>
                   <Modal
-                    title={`Delete post ${title}`}
+                    title={`Delete post ${postToDelete?.title}`}
                     visible={deletePostModalVisible}
                     onCancel={() => setDeletePostVisible(false)}
                     onOk={() => {
@@ -209,6 +221,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
             visible={addPostModalVisible}
             onCancel={() =>  setAddPostModalVisisble(false)}
             onOk={() =>  setAddPostModalVisisble(false)}
+            destroyOnClose={true}
           />
           <UpdateUserModal
             userData={user}
@@ -216,6 +229,14 @@ const UserPage = ({ id, data: { loading, user } }) => {
             visible={updateUserModalVisible}
             onCancel={() =>  setUpdateUserModalVisible(false)}
             onOk={() =>  setUpdateUserModalVisible(false)}
+          />
+          <UpdatePostModal
+            post={currentPost}
+            title="Update Post"
+            visible={updatePostModalVisible}
+            onCancel={() =>  setUpdatePostModalVisisble(false)}
+            onOk={() =>  setUpdatePostModalVisisble(false)}
+            destroyOnClose={true}
           />
       </>
     )
