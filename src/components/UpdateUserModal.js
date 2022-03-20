@@ -14,7 +14,10 @@ const UpdateUserModal = (props) => {
       },
       refetchQueries: [
         {
-          query
+          query,
+          variables: {
+            id: userData.id
+          }
         }
       ]
     });
@@ -123,8 +126,8 @@ mutation updateUser($id: ID!, $firstName: String, $secondName: String, $age: Int
 `;
 
 const query = gql`
-  {
-    users {
+  query fetchUser($id: ID!) {
+    user(id: $id) {
       id,
       firstName,
       secondName,
@@ -132,6 +135,19 @@ const query = gql`
       age,
       city,
       country,
+      posts {
+        id,
+        title,
+        description,
+        date,
+        content,
+        city,
+        country,
+        created,
+        user {
+          id
+        }
+      }
     }
   }
 `;

@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import gql from 'graphql-tag';
 import { graphql, Mutation } from "react-apollo";
-import { Spin } from 'antd';
+import { Spin, Modal } from 'antd';
 import { Link } from 'react-router-dom';
-import UpdateUserModal from './UpdateUserModal';
-import AddPostModal from "./AddPostModal";
 class UserList extends Component {
   constructor(props) {
     super(props);
@@ -12,6 +10,7 @@ class UserList extends Component {
       user: {},
       visible: false,
       addPostModalVisible: false,
+      deleteUserModalVisible: false,
     }
   }
   getPostsData(id) {
@@ -27,16 +26,6 @@ class UserList extends Component {
       variables: {
         id
       },
-      refetchQueries: [
-        {
-          query
-        }
-      ]
-    })
-  }
-  updateUser(variables) {
-    this.props.mutate({
-      variables,
       refetchQueries: [
         {
           query
@@ -107,49 +96,29 @@ class UserList extends Component {
                 <span><b>{posts.length}</b></span>
               </div>
             </Link>
-            <button onClick={() => this.deleteUser(id)}>Delete User</button>
             <button onClick={() => {
-              this.setState({ user: { id, firstName, secondName, occupation, age, city, country }})
-              this.setState({ visible: true });
-            }}>Update User</button>
-            <button onClick={() => this.setState({ addPostModalVisible: true, user: { id, firstName, secondName, occupation, age, city, country }})}>Add Post</button>
+              this.setState({ user: { id, firstName, secondName, occupation, age, city, country, posts }});
+              this.setState({ deleteUserModalVisible: true });
+            }}>Delete User</button>
           </div>
         ))}
-        <UpdateUserModal
-          userData={this.state.user}
-          title="Update User"
-          visible={this.state.visible}
-          onCancel={() =>  this.setState({ visible: false })}
-          onOk={() =>  this.setState({ visible: false })}
-        />
-        <AddPostModal
-          userId={this.state.user.id}
-          title="Add Post"
-          visible={this.state.addPostModalVisible}
-          onCancel={() =>  this.setState({ addPostModalVisible: false })}
-          onOk={() =>  this.setState({ addPostModalVisible: false })}
-        />
+        <Modal
+          title="User delete request"
+          visible={this.state.deleteUserModalVisible}
+          onCancel={() => this.setState({ deleteUserModalVisible: false })}
+          onOk={() => {
+            this.deleteUser(this.state.user.id);
+            this.setState({ deleteUserModalVisible: false });
+          }}
+          width={500}
+          destroyOnClose
+        >
+          Do you really want to delete the user with all the posts?
+        </Modal>
       </div>
     )
   }
 }
-
-const getPostsByUserId = gql`
-  query user($id: ID!) {
-    user(id: $id) {
-      id,
-      posts {
-        id,
-        title,
-        description,
-        content,
-        date,
-        city,
-        country
-      }
-    }
-  }
-`;
 
 const query = gql`
   {

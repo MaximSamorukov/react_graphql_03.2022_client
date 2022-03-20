@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import gql from 'graphql-tag';
-import { GraphQLID } from 'graphql';
 import { Mutation, Query } from "react-apollo";
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
 
@@ -146,7 +145,7 @@ const addPost = gql`
 //`;
 
 const query = gql`
-  query fetchUser($userId: String!) {
+  query fetchUser($userId: ID!) {
     user(id: $userId) {
       id,
       firstName,

@@ -8,6 +8,7 @@ import AddPostModal from "./AddPostModal";
 
 const UserPage = ({ id, data: { loading, user } }) => {
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
+  const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
   if (!loading) {
     const { posts = [] } = user;
     return (
@@ -64,14 +65,14 @@ const UserPage = ({ id, data: { loading, user } }) => {
               <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
             </div>
             <div>
-              <button onClick={() => {}}>Update User</button>
+              <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
             </div>
             <div>
               <button onClick={() => {}}>Delete User</button>
             </div>
           </div>
         </div>
-        { posts?.length && (
+        { posts.length ? (
           <div
             style={{
               width: 500,
@@ -84,8 +85,8 @@ const UserPage = ({ id, data: { loading, user } }) => {
             <b>Posts: </b>
             ({posts.length})
           </div>
-        )}
-        {posts.length && posts.map(({ id, title, description, content, date, city, country, created, user }) => (
+        ) : <></>}
+        {posts.length ? posts.map(({ id, title, description, content, date, city, country, created, user }) => (
           <div
             key={id}
             style={{
@@ -137,13 +138,20 @@ const UserPage = ({ id, data: { loading, user } }) => {
             <button>Update Post</button>
           </div>
 
-        ))}
+        )) : <></>}
         <AddPostModal
           userId={id}
           title="Add Post"
           visible={addPostModalVisible}
           onCancel={() =>  setAddPostModalVisisble(false)}
           onOk={() =>  setAddPostModalVisisble(false)}
+        />
+        <UpdateUserModal
+          userData={user}
+          title="Update User"
+          visible={updateUserModalVisible}
+          onCancel={() =>  setUpdateUserModalVisible(false)}
+          onOk={() =>  setUpdateUserModalVisible(false)}
         />
       </>
     )
@@ -169,7 +177,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
 }
 
 const query = gql`
-  query fetchUser($id: String!) {
+  query fetchUser($id: ID!) {
     user(id: $id) {
       id,
       firstName,
