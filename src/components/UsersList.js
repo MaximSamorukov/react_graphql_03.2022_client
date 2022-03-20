@@ -113,7 +113,7 @@ class UserList extends Component {
           width={500}
           destroyOnClose
         >
-          Do you really want to delete the user with all the posts?
+          Do you really want to delete the user and all associated posts?
         </Modal>
       </div>
     )

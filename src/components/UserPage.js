@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { graphql, Mutation } from "react-apollo";
 import gql from "graphql-tag";
 import { Spin, Modal } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UpdateUserModal from './UpdateUserModal';
 import AddPostModal from "./AddPostModal";
 
@@ -10,6 +10,9 @@ const UserPage = ({ id, data: { loading, user } }) => {
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
   const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
   const [ deletePostModalVisible, setDeletePostVisible ] = useState(false);
+  const [ deleteUserModalVisible, setDeleteUserVisible ] = useState(false);
+  const navigate = useNavigate();
+
   if (!loading) {
     const { posts = [] } = user;
     return (
@@ -36,43 +39,72 @@ const UserPage = ({ id, data: { loading, user } }) => {
           >
             <b>User Page</b>
           </div>
-          <div style={{
-            border: '1px solid green',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            width: 500,
-            marginTop: 10,
-            padding: 10,
-          }}>
-            {
-              Object.keys(user).map((item, index) => {
-                if (item !== 'posts') {
-                  return (
-                    <div key={`${user[item]}${index}`}>
-                      <span>{`${item}: `}<b>{user[item]}</b></span>
-                    </div>
-                  )
+          <Mutation
+            mutation={deleteUser}
+            variables={{
+              id,
+            }}
+            refetchQueries={[
+              {
+                query: fetchUsers,
+              }
+            ]}
+          >
+            {(deleteUserMutation) => (
+              <div style={{
+                border: '1px solid green',
+                marginRight: 'auto',
+                marginLeft: 'auto',
+                width: 500,
+                marginTop: 10,
+                padding: 10,
+              }}>
+                {
+                  Object.keys(user).map((item, index) => {
+                    if (item !== 'posts') {
+                      return (
+                        <div key={`${user[item]}${index}`}>
+                          <span>{`${item}: `}<b>{user[item]}</b></span>
+                        </div>
+                      )
+                    }
+                    return <></>;
+                  })
                 }
-                return <></>;
-              })
-            }
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}
-            >
-              <div>
-                <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
+                <Modal
+                  title={`Delete user ${user.title}`}
+                  visible={deleteUserModalVisible}
+                  onCancel={() => setDeleteUserVisible(false)}
+                  onOk={async() => {
+                    await deleteUserMutation();
+                    setDeleteUserVisible(false);
+                    navigate('/', { replace: true });
+                  }}
+                  width={600}
+                  destroyOnClose
+                >
+                  Do you really want to delete the user and all associated posts?
+                </Modal>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}
+                >
+                  <div>
+                    <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
+                  </div>
+                  <div>
+                    <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
+                  </div>
+                  <div>
+                    <button onClick={() => setDeleteUserVisible(true)}>Delete User</button>
+                  </div>
+                </div>
               </div>
-              <div>
-                <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
-              </div>
-              <div>
-                <button onClick={() => {}}>Delete User</button>
-              </div>
-            </div>
-          </div>
+
+            )}
+          </Mutation>
           { posts.length ? (
             <div
               style={{
@@ -241,7 +273,37 @@ const deletePost = gql`
       id
     }
   }
-`
+`;
+
+const deleteUser = gql`
+  mutation deleteUser($id: ID!) {
+    deleteUser(id: $id) {
+      firstName,
+      secondName,
+      age,
+      occupation,
+      city,
+      country
+    }
+  }
+`;
+
+const fetchUsers = gql`
+  {
+    users {
+      id,
+      firstName,
+      secondName,
+      occupation,
+      age,
+      city,
+      country,
+      posts {
+        id,
+      }
+    }
+  }
+`;
 
 export default graphql(query, {
   options: (props) => {
