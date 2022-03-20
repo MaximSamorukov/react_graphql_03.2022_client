@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { graphql } from "react-apollo";
+import { graphql, Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import { Spin } from "antd";
+import { Spin, Modal } from "antd";
 import { Link } from "react-router-dom";
 import UpdateUserModal from './UpdateUserModal';
 import AddPostModal from "./AddPostModal";
@@ -9,150 +9,182 @@ import AddPostModal from "./AddPostModal";
 const UserPage = ({ id, data: { loading, user } }) => {
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
   const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
+  const [ deletePostModalVisible, setDeletePostVisible ] = useState(false);
   if (!loading) {
     const { posts = [] } = user;
     return (
       <>
-        <div
-          style={{
+          <div
+            style={{
+              marginRight: 'auto',
+              marginLeft: 'auto',
+              width: 500,
+              marginTop: 10,
+              height: 10,
+            }}
+          >
+            <Link to="/">Back</Link>
+          </div>
+          <div
+            style={{
+              marginRight: 'auto',
+              marginLeft: 'auto',
+              width: 500,
+              fontSize: 20,
+              textAlign: 'center'
+            }}
+          >
+            <b>User Page</b>
+          </div>
+          <div style={{
+            border: '1px solid green',
             marginRight: 'auto',
             marginLeft: 'auto',
             width: 500,
             marginTop: 10,
-            height: 10,
-          }}
-        >
-          <Link to="/">Back</Link>
-        </div>
-        <div
-          style={{
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            width: 500,
-            fontSize: 20,
-
-            textAlign: 'center'
-          }}
-        >
-          <b>User Page</b>
-        </div>
-        <div style={{
-          border: '1px solid green',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          width: 500,
-          marginTop: 10,
-          padding: 10,
-        }}>
-          {
-            Object.keys(user).map((item, index) => {
-              if (item !== 'posts') {
-                return (
-                  <div key={`${user[item]}${index}`}>
-                    <span>{`${item}: `}<b>{user[item]}</b></span>
+            padding: 10,
+          }}>
+            {
+              Object.keys(user).map((item, index) => {
+                if (item !== 'posts') {
+                  return (
+                    <div key={`${user[item]}${index}`}>
+                      <span>{`${item}: `}<b>{user[item]}</b></span>
+                    </div>
+                  )
+                }
+                return <></>;
+              })
+            }
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+              }}
+            >
+              <div>
+                <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
+              </div>
+              <div>
+                <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
+              </div>
+              <div>
+                <button onClick={() => {}}>Delete User</button>
+              </div>
+            </div>
+          </div>
+          { posts.length ? (
+            <div
+              style={{
+                width: 500,
+                marginTop: 10,
+                padding: 10,
+                marginRight: 'auto',
+                marginLeft: 'auto',
+              }}
+            >
+              <b>Posts: </b>
+              ({posts.length})
+            </div>
+          ) : <></>}
+          {posts.length ? posts.map(({ id, title, description, content, date, city, country, created, user }) => (
+            <Mutation
+              mutation={deletePost}
+              variables={{
+                id,
+              }}
+              refetchQueries={[{
+                query,
+                variables: {
+                  id: user.id,
+                }
+              }]}
+            >
+              {(deletePostMutation) => (
+                <>
+                  <div
+                    key={id}
+                    style={{
+                      border: '1px solid green',
+                      marginRight: 'auto',
+                      marginLeft: 'auto',
+                      width: 500,
+                      marginTop: 10,
+                      padding: 10,
+                    }}
+                  >
+                    <div>
+                      <span>id: </span>
+                      <span><b>{id}</b></span>
+                    </div>
+                    <div>
+                      <span>user id: </span>
+                      <span><b>{user.id}</b></span>
+                    </div>
+                    <div>
+                      <span>title: </span>
+                      <span><b>{title}</b></span>
+                    </div>
+                    <div>
+                      <span>description: </span>
+                      <span><b>{description}</b></span>
+                    </div>
+                    <div>
+                      <span>content: </span>
+                      <span><b>{content}</b></span>
+                    </div>
+                    <div>
+                      <span>date: </span>
+                      <span><b>{date}</b></span>
+                    </div>
+                    <div>
+                      <span>city: </span>
+                      <span><b>{city}</b></span>
+                    </div>
+                    <div>
+                      <span>country: </span>
+                      <span><b>{country}</b></span>
+                    </div>
+                    <div>
+                      <span>created: </span>
+                      <span><b>{created}</b></span>
+                    </div>
+                    <button onClick={() => setDeletePostVisible(true)}>
+                      Delete Post
+                    </button>
+                    <button>Update Post</button>
                   </div>
-                )
-              }
-            })
-          }
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-            }}
-          >
-            <div>
-              <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
-            </div>
-            <div>
-              <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
-            </div>
-            <div>
-              <button onClick={() => {}}>Delete User</button>
-            </div>
-          </div>
-        </div>
-        { posts.length ? (
-          <div
-            style={{
-              width: 500,
-              marginTop: 10,
-              padding: 10,
-              marginRight: 'auto',
-              marginLeft: 'auto',
-            }}
-          >
-            <b>Posts: </b>
-            ({posts.length})
-          </div>
-        ) : <></>}
-        {posts.length ? posts.map(({ id, title, description, content, date, city, country, created, user }) => (
-          <div
-            key={id}
-            style={{
-              border: '1px solid green',
-              marginRight: 'auto',
-              marginLeft: 'auto',
-              width: 500,
-              marginTop: 10,
-              padding: 10,
-            }}
-          >
-            <div>
-              <span>id: </span>
-              <span><b>{id}</b></span>
-            </div>
-            <div>
-              <span>user id: </span>
-              <span><b>{user.id}</b></span>
-            </div>
-            <div>
-              <span>title: </span>
-              <span><b>{title}</b></span>
-            </div>
-            <div>
-              <span>description: </span>
-              <span><b>{description}</b></span>
-            </div>
-            <div>
-              <span>content: </span>
-              <span><b>{content}</b></span>
-            </div>
-            <div>
-              <span>date: </span>
-              <span><b>{date}</b></span>
-            </div>
-            <div>
-              <span>city: </span>
-              <span><b>{city}</b></span>
-            </div>
-            <div>
-              <span>country: </span>
-              <span><b>{country}</b></span>
-            </div>
-            <div>
-              <span>created: </span>
-              <span><b>{created}</b></span>
-            </div>
-            <button>Delete Post</button>
-            <button>Update Post</button>
-          </div>
-
-        )) : <></>}
-        <AddPostModal
-          userId={id}
-          title="Add Post"
-          visible={addPostModalVisible}
-          onCancel={() =>  setAddPostModalVisisble(false)}
-          onOk={() =>  setAddPostModalVisisble(false)}
-        />
-        <UpdateUserModal
-          userData={user}
-          title="Update User"
-          visible={updateUserModalVisible}
-          onCancel={() =>  setUpdateUserModalVisible(false)}
-          onOk={() =>  setUpdateUserModalVisible(false)}
-        />
+                  <Modal
+                    title={`Delete post ${title}`}
+                    visible={deletePostModalVisible}
+                    onCancel={() => setDeletePostVisible(false)}
+                    onOk={() => {
+                      deletePostMutation();
+                      setDeletePostVisible(false);
+                    }}
+                    width={600}
+                    destroyOnClose
+                  >
+                    Do you really want to delete the post?
+                  </Modal>
+                </>
+              )}
+            </Mutation>
+          )) : <></>}
+          <AddPostModal
+            userId={id}
+            title="Add Post"
+            visible={addPostModalVisible}
+            onCancel={() =>  setAddPostModalVisisble(false)}
+            onOk={() =>  setAddPostModalVisisble(false)}
+          />
+          <UpdateUserModal
+            userData={user}
+            title="Update User"
+            visible={updateUserModalVisible}
+            onCancel={() =>  setUpdateUserModalVisible(false)}
+            onOk={() =>  setUpdateUserModalVisible(false)}
+          />
       </>
     )
   }
@@ -202,6 +234,14 @@ const query = gql`
     }
   }
 `;
+
+const deletePost = gql`
+  mutation deletePost($id: ID!) {
+    deletePost(id: $id) {
+      id
+    }
+  }
+`
 
 export default graphql(query, {
   options: (props) => {

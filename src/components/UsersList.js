@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import gql from 'graphql-tag';
-import { graphql, Mutation } from "react-apollo";
+import { graphql } from "react-apollo";
 import { Spin, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 class UserList extends Component {

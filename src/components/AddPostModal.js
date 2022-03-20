@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import gql from 'graphql-tag';
-import { Mutation, Query } from "react-apollo";
-import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
+import { Mutation } from "react-apollo";
+import { Modal, Form, Input, Space, Button } from "antd";
 
 const AddPostModal = (props) => {
   const [postData, setPostData] = useState({});
