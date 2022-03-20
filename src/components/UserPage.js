@@ -1,32 +1,151 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import { graphql } from "react-apollo";
 import gql from "graphql-tag";
 import { Spin } from "antd";
 import { Link } from "react-router-dom";
+import UpdateUserModal from './UpdateUserModal';
+import AddPostModal from "./AddPostModal";
 
 const UserPage = ({ id, data: { loading, user } }) => {
+  const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
   if (!loading) {
+    const { posts = [] } = user;
     return (
-      <div style={{
-        border: '1px solid green',
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        width: 500,
-        marginTop: 10,
-        padding: 10,
-      }}>
-        {
-          Object.keys(user).map((item, index) => (
-            <div key={`${user[item]}${index}`}>
-              <span>{`${item}: `}<b>{user[item]}</b></span>
-            </div>
-          ))
-        }
-        <div>
+      <>
+        <div
+          style={{
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            width: 500,
+            marginTop: 10,
+            height: 10,
+          }}
+        >
           <Link to="/">Back</Link>
         </div>
-      </div>
+        <div
+          style={{
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            width: 500,
+            fontSize: 20,
+
+            textAlign: 'center'
+          }}
+        >
+          <b>User Page</b>
+        </div>
+        <div style={{
+          border: '1px solid green',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+          width: 500,
+          marginTop: 10,
+          padding: 10,
+        }}>
+          {
+            Object.keys(user).map((item, index) => {
+              if (item !== 'posts') {
+                return (
+                  <div key={`${user[item]}${index}`}>
+                    <span>{`${item}: `}<b>{user[item]}</b></span>
+                  </div>
+                )
+              }
+            })
+          }
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+            }}
+          >
+            <div>
+              <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
+            </div>
+            <div>
+              <button onClick={() => {}}>Update User</button>
+            </div>
+            <div>
+              <button onClick={() => {}}>Delete User</button>
+            </div>
+          </div>
+        </div>
+        { posts?.length && (
+          <div
+            style={{
+              width: 500,
+              marginTop: 10,
+              padding: 10,
+              marginRight: 'auto',
+              marginLeft: 'auto',
+            }}
+          >
+            <b>Posts: </b>
+            ({posts.length})
+          </div>
+        )}
+        {posts.length && posts.map(({ id, title, description, content, date, city, country, created, user }) => (
+          <div
+            key={id}
+            style={{
+              border: '1px solid green',
+              marginRight: 'auto',
+              marginLeft: 'auto',
+              width: 500,
+              marginTop: 10,
+              padding: 10,
+            }}
+          >
+            <div>
+              <span>id: </span>
+              <span><b>{id}</b></span>
+            </div>
+            <div>
+              <span>user id: </span>
+              <span><b>{user.id}</b></span>
+            </div>
+            <div>
+              <span>title: </span>
+              <span><b>{title}</b></span>
+            </div>
+            <div>
+              <span>description: </span>
+              <span><b>{description}</b></span>
+            </div>
+            <div>
+              <span>content: </span>
+              <span><b>{content}</b></span>
+            </div>
+            <div>
+              <span>date: </span>
+              <span><b>{date}</b></span>
+            </div>
+            <div>
+              <span>city: </span>
+              <span><b>{city}</b></span>
+            </div>
+            <div>
+              <span>country: </span>
+              <span><b>{country}</b></span>
+            </div>
+            <div>
+              <span>created: </span>
+              <span><b>{created}</b></span>
+            </div>
+            <button>Delete Post</button>
+            <button>Update Post</button>
+          </div>
+
+        ))}
+        <AddPostModal
+          userId={id}
+          title="Add Post"
+          visible={addPostModalVisible}
+          onCancel={() =>  setAddPostModalVisisble(false)}
+          onOk={() =>  setAddPostModalVisisble(false)}
+        />
+      </>
     )
   }
   return (
@@ -50,7 +169,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
 }
 
 const query = gql`
-  query fetchUser($id: ID!) {
+  query fetchUser($id: String!) {
     user(id: $id) {
       id,
       firstName,
@@ -59,6 +178,19 @@ const query = gql`
       age,
       city,
       country,
+      posts {
+        id,
+        title,
+        description,
+        date,
+        content,
+        city,
+        country,
+        created,
+        user {
+          id
+        }
+      }
     }
   }
 `;

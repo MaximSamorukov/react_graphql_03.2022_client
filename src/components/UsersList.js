@@ -113,7 +113,6 @@ class UserList extends Component {
               this.setState({ visible: true });
             }}>Update User</button>
             <button onClick={() => this.setState({ addPostModalVisible: true, user: { id, firstName, secondName, occupation, age, city, country }})}>Add Post</button>
-            <button onClick={() => {}}>Show Posts</button>
           </div>
         ))}
         <UpdateUserModal

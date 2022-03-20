@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import gql from 'graphql-tag';
+import { GraphQLID } from 'graphql';
 import { Mutation, Query } from "react-apollo";
 import { Modal, Form, Input, Space, InputNumber, Button } from "antd";
 
@@ -17,6 +18,7 @@ const AddPostModal = (props) => {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   return (
     <Modal
       title={title}
@@ -35,6 +37,9 @@ const AddPostModal = (props) => {
         refetchQueries={[
           {
             query,
+            variables: {
+              userId
+            }
           }
         ]}
       >
@@ -123,9 +128,26 @@ const addPost = gql`
   }
 `;
 
+//const query = gql`
+//  {
+//    users {
+//      id,
+//      firstName,
+//      secondName,
+//      occupation,
+//      age,
+//      city,
+//      country,
+//      posts {
+//        id
+//      }
+//    }
+//  }
+//`;
+
 const query = gql`
-  {
-    users {
+  query fetchUser($userId: String!) {
+    user(id: $userId) {
       id,
       firstName,
       secondName,
@@ -134,7 +156,17 @@ const query = gql`
       city,
       country,
       posts {
-        id
+        id,
+        title,
+        description,
+        date,
+        content,
+        city,
+        country,
+        created,
+        user {
+          id
+        }
       }
     }
   }
