@@ -1,35 +1,61 @@
 import React, { useState, useRef } from "react";
 import { Button, Modal, Input, Form, InputNumber, Space } from "antd";
 import gql from 'graphql-tag';
-import { graphql } from "react-apollo";
+import { graphql, useQuery } from "react-apollo";
 import './Header.css';
+import Icon, { SearchOutlined, SortDescendingOutlined, SortAscendingOutlined } from "@ant-design/icons";
 
 const Header = (props) => {
   const [visible, setVisible] = useState(false);
+  const [sortDirection, setSortDirection] = useState(true);
+  const { data, refetch } = useQuery(getUsers, {
+    variables: {
+      field: 'created',
+      sortDirection: sortDirection? 'asc' : 'desc'
+    },
+  });
   const form = useRef();
   const onFinish = (values) => {
     props.mutate({
       variables: values,
       refetchQueries: [
         {
-          query,
+          query: getUsers,
         }
       ]
     });
     form.current.resetFields();
     setVisible(false);
   };
-
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
   return (
     <>
       <div className="header">
-        <Button
-          type="primary"
-          onClick={() => setVisible(true)}
-        >Add User</Button>
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => setVisible(true)}
+          >Add User</Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              setSortDirection((prev) => !prev);
+              refetch();
+            }}
+          >
+            <Icon style={{ fontSize: 20, verticalAlign: 'top' }} component={sortDirection ? SortAscendingOutlined : SortDescendingOutlined} />
+            Sort
+          </Button>
+          <Button
+            type="primary"
+            onClick={() => setVisible(true)}
+          >
+            <Icon component={SearchOutlined} />
+            Search
+          </Button>
+        </Space>
       </div>
       <Modal
         visible={visible}
@@ -124,9 +150,10 @@ const mutation = gql`
   }
 `;
 
-const query = gql`
+const getUsers = gql`
+  query users($field: String = "created", $sortDirection: String = "desc")
   {
-    users(field: "created", sortDirection: "desc") {
+    users(field: $field, sortDirection: $sortDirection) {
       id,
       firstName,
       secondName,
@@ -142,4 +169,4 @@ const query = gql`
   }
 `;
 
-export default graphql(query)(graphql(mutation)(Header));
+export default graphql(mutation)(Header);

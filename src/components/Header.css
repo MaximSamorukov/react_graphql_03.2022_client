@@ -1,8 +1,14 @@
 .header {
-  width: 500px;
+  width: auto;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
+  margin-right: 5px;
+}
+
+.sort_label {
+  margin-left: 10px;
+  height: 20px;
 }
