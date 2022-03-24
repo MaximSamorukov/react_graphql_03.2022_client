@@ -126,7 +126,7 @@ const mutation = gql`
 
 const query = gql`
   {
-    users {
+    users(field: "created", sortDirection: "desc") {
       id,
       firstName,
       secondName,

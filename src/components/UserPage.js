@@ -312,7 +312,7 @@ const deleteUser = gql`
 
 const fetchUsers = gql`
   {
-    users {
+    users(field: "created", sortDirection: "desc") {
       id,
       firstName,
       secondName,

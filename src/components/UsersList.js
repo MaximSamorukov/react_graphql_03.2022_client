@@ -126,7 +126,7 @@ class UserList extends Component {
 
 const query = gql`
   {
-    users {
+    users(field: "created", sortDirection: "desc") {
       id,
       firstName,
       secondName,
