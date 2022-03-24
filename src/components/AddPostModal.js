@@ -24,8 +24,9 @@ const AddPostModal = (props) => {
       visible={visible}
       onCancel={onCancel}
       onOk={onOk}
-      width={600}
+      width={400}
       destroyOnClose
+      footer={null}
     >
       <Mutation
         mutation={addPost}

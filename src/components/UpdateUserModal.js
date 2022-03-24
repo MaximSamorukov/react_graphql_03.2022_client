@@ -36,6 +36,7 @@ const UpdateUserModal = (props) => {
       onOk={onOk}
       width={400}
       destroyOnClose
+      footer={null}
     >
       <Form
         ref={formUpdate}
