@@ -108,10 +108,15 @@ const UpdatePostModal = (props) => {
                 <Input />
               </Form.Item>
             </Space>
-            <Form.Item wrapperCol={{  span: 8, offset: 8 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
+            <Form.Item wrapperCol={{  span: 8, offset: 6 }}>
+              <Space align="center" direction="horizontal">
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+                <Button onClick={onCancel} type="primary" htmlType="button">
+                  Cancel
+                </Button>
+              </Space>
             </Form.Item>
           </Form>
 

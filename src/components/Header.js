@@ -95,11 +95,16 @@ const Header = (props) => {
               <Input />
             </Form.Item>
           </Space>
-          <Form.Item wrapperCol={{  span: 8, offset: 8 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
+            <Form.Item wrapperCol={{  span: 8, offset: 6 }}>
+              <Space align="center" direction="horizontal" >
+                <Button type="primary" htmlType="submit">
+                  Submit
+                </Button>
+                <Button onClick={() => setVisible(false)} type="primary" htmlType="button">
+                  Cancel
+                </Button>
+              </Space>
+            </Form.Item>
         </Form>
       </Modal>
     </>
