@@ -56,7 +56,7 @@ class UserList extends Component {
             <Spin />
           </div>
         )}
-        { users?.map(({ id, firstName, secondName, occupation, age, city, country, posts }) => (
+        { users?.map(({ id, firstName, secondName, occupation, age, city, country, posts, created }) => (
           <div key={id} style={{
             border: '1px solid green',
             margin: 5,
@@ -95,6 +95,10 @@ class UserList extends Component {
                 <span>posts: </span>
                 <span><b>{posts.length}</b></span>
               </div>
+              <div>
+                <span>created: </span>
+                <span><b>{created}</b></span>
+              </div>
             </Link>
             <button onClick={() => {
               this.setState({ user: { id, firstName, secondName, occupation, age, city, country, posts }});
@@ -130,6 +134,7 @@ const query = gql`
       age,
       city,
       country,
+      created,
       posts {
         id,
       }

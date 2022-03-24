@@ -271,6 +271,7 @@ const query = gql`
       age,
       city,
       country,
+      created,
       posts {
         id,
         title,
@@ -319,6 +320,7 @@ const fetchUsers = gql`
       age,
       city,
       country,
+      created,
       posts {
         id,
       }

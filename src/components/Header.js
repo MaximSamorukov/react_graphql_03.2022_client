@@ -128,6 +128,7 @@ const query = gql`
       age,
       city,
       country,
+      created,
       posts {
         id
       }
