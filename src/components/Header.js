@@ -1,19 +1,12 @@
 import React, { useState, useRef } from "react";
 import { Button, Modal, Input, Form, InputNumber, Space } from "antd";
 import gql from 'graphql-tag';
-import { graphql, useQuery } from "react-apollo";
+import { graphql } from "react-apollo";
 import './Header.css';
 import Icon, { SearchOutlined, SortDescendingOutlined, SortAscendingOutlined } from "@ant-design/icons";
 
 const Header = (props) => {
   const [visible, setVisible] = useState(false);
-  const [sortDirection, setSortDirection] = useState(true);
-  const { data, refetch } = useQuery(getUsers, {
-    variables: {
-      field: 'created',
-      sortDirection: sortDirection? 'asc' : 'desc'
-    },
-  });
   const form = useRef();
   const onFinish = (values) => {
     props.mutate({
@@ -30,6 +23,7 @@ const Header = (props) => {
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   return (
     <>
       <div className="header">
@@ -41,11 +35,13 @@ const Header = (props) => {
           <Button
             type="primary"
             onClick={() => {
-              setSortDirection((prev) => !prev);
-              refetch();
+              props.setSortOptions(({ sortDirection }) => ({
+                field: 'created',
+                sortDirection: sortDirection === 'desc' ? 'asc' : 'desc'
+              }))
             }}
           >
-            <Icon style={{ fontSize: 20, verticalAlign: 'top' }} component={sortDirection ? SortAscendingOutlined : SortDescendingOutlined} />
+            <Icon style={{ fontSize: 20, verticalAlign: 'top' }} component={props.sortOptions.sortDirection === 'asc' ? SortAscendingOutlined : SortDescendingOutlined} />
             Sort
           </Button>
           <Button

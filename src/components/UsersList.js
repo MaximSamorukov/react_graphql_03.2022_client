@@ -34,6 +34,10 @@ class UserList extends Component {
     })
   }
 
+  componentDidUpdate() {
+    this.props.data.refetch(this.props.sortOptions);
+  }
+
   render() {
     const { users, loading } = this.props.data;
     return (
@@ -125,8 +129,9 @@ class UserList extends Component {
 }
 
 const query = gql`
+  query users($field: String = "created", $sortDirection: String = "desc")
   {
-    users(field: "created", sortDirection: "desc") {
+    users(field: $field, sortDirection: $sortDirection) {
       id,
       firstName,
       secondName,
@@ -136,7 +141,7 @@ const query = gql`
       country,
       created,
       posts {
-        id,
+        id
       }
     }
   }
