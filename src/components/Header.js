@@ -165,4 +165,4 @@ const getUsers = gql`
   }
 `;
 
-export default graphql(mutation)(Header);
+export default graphql(getUsers)(graphql(mutation)(Header));

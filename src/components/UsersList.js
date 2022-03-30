@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { dateFormat } from '../utils/functions';
 import gql from 'graphql-tag';
 import { graphql } from "react-apollo";
 import { Spin, Modal } from 'antd';
@@ -101,7 +102,7 @@ class UserList extends Component {
               </div>
               <div>
                 <span>created: </span>
-                <span><b>{created}</b></span>
+                <span><b>{dateFormat(created)}</b></span>
               </div>
             </Link>
             <button onClick={() => {
@@ -121,7 +122,7 @@ class UserList extends Component {
           width={500}
           destroyOnClose
         >
-          Do you really want to delete the user and all associated posts?
+          {`Do you really want to delete the user ${this.state.user?.posts?.length ? 'and all associated posts' : '' }?`}
         </Modal>
       </div>
     )

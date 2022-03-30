@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { graphql, Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import { dateFormat } from "../utils/functions";
 import { Spin, Modal } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import UpdateUserModal from './UpdateUserModal';
@@ -68,7 +69,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
                     if (item !== 'posts') {
                       return (
                         <div key={`${user[item]}${index}`}>
-                          <span>{`${item}: `}<b>{user[item]}</b></span>
+                          <span>{`${item}: `}<b>{item === 'created' ? dateFormat(user[item]) : user[item]}</b></span>
                         </div>
                       )
                     }
@@ -87,7 +88,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
                   width={600}
                   destroyOnClose
                 >
-                  Do you really want to delete the user and all associated posts?
+                  {`Do you really want to delete the user ${user?.posts?.length ? 'and all associated posts' : '' }?`}
                 </Modal>
                 <div
                   style={{
