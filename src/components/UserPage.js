@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { graphql, Mutation } from "react-apollo";
+import _ from 'lodash';
 import gql from "graphql-tag";
 import { dateFormat } from "../utils/functions";
 import { Spin, Modal } from "antd";
@@ -11,12 +12,14 @@ import UpdatePostModal from "./UpdatePostModal";
 const UserPage = ({ id, data: { loading, user } }) => {
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
   const [ updatePostModalVisible, setUpdatePostModalVisisble ] = useState(false);
+  const [postSortDirection, setPostSortDirection] = useState(false);
   const [ currentPost, setCurrentPost ] = useState({});
   const [ postToDelete, setPostToDelete ] = useState(null);
   const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
   const [ deletePostModalVisible, setDeletePostVisible ] = useState(false);
   const [ deleteUserModalVisible, setDeleteUserVisible ] = useState(false);
   const navigate = useNavigate();
+  const togglePostSortDirection = () => setPostSortDirection((prev) => !prev);
 
   if (!loading) {
     const { posts = [] } = user;
@@ -65,7 +68,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
                 padding: 10,
               }}>
                 {
-                  Object.keys(user).map((item, index) => {
+                  Object.keys(_.omit(user, ['__typename'])).map((item, index) => {
                     if (item !== 'posts') {
                       return (
                         <div key={`${user[item]}${index}`}>
@@ -118,10 +121,43 @@ const UserPage = ({ id, data: { loading, user } }) => {
                 padding: 10,
                 marginRight: 'auto',
                 marginLeft: 'auto',
+                paddingBottom: 0,
               }}
             >
               <b>Posts: </b>
               ({posts.length})
+            </div>
+          ) : <></>}
+          {posts.length ? (
+            <div
+              style={{
+                width: 500,
+                margin: 0,
+                padding: 0,
+                marginRight: 'auto',
+                marginLeft: 'auto',
+                lineHeight: '10px',
+                textAlign: 'end',
+                color: 'blue',
+              }}
+            >
+              <button
+                style={{
+                  backgroundColor: 'white',
+                  border: 'none',
+                }}
+                onClick={togglePostSortDirection}
+              >
+                {postSortDirection ? (
+                  <>
+                    <span style={{ fontSize: '18px' }}>&#8593;</span> sort on date <span style={{ fontSize: '18px' }}>&#8593;</span>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontSize: '18px' }}>&#8595;</span> sort on date <span style={{ fontSize: '18px' }}>&#8595;</span>
+                  </>
+                )}
+              </button>
             </div>
           ) : <></>}
           {posts.length ? posts.map(({ id, title, description, content, date, city, country, created, user }) => (
@@ -184,7 +220,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
                     </div>
                     <div>
                       <span>created: </span>
-                      <span><b>{created}</b></span>
+                      <span><b>{dateFormat(created)}</b></span>
                     </div>
                     <button onClick={() => {
                       setPostToDelete({ id, title });
