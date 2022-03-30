@@ -39,6 +39,10 @@ class UserList extends Component {
     this.props.data.refetch(this.props.sortOptions);
   }
 
+  componentDidMount() {
+    this.props.data.refetch(this.props.sortOptions);
+  }
+
   render() {
     const { users, loading } = this.props.data;
     return (
