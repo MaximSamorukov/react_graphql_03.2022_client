@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { dateFormat } from '../utils/functions';
 import gql from 'graphql-tag';
 import { graphql } from "react-apollo";
-import { Spin, Modal } from 'antd';
+import { Spin, Modal, Button } from 'antd';
 import { Link } from 'react-router-dom';
 class UserList extends Component {
   constructor(props) {
@@ -109,10 +109,16 @@ class UserList extends Component {
                 <span><b>{dateFormat(created)}</b></span>
               </div>
             </Link>
-            <button onClick={() => {
-              this.setState({ user: { id, firstName, secondName, occupation, age, city, country, posts }});
-              this.setState({ deleteUserModalVisible: true });
-            }}>Delete User</button>
+            <Button
+              type="primary"
+              htmlType="button"
+              onClick={() => {
+                this.setState({ user: { id, firstName, secondName, occupation, age, city, country, posts }});
+                this.setState({ deleteUserModalVisible: true });
+              }}
+            >
+              Delete User
+            </Button>
           </div>
         ))}
         <Modal

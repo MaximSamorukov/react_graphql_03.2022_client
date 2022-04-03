@@ -3,7 +3,7 @@ import { graphql, Mutation } from "react-apollo";
 import _ from 'lodash';
 import gql from "graphql-tag";
 import { dateFormat } from "../utils/functions";
-import { Spin, Modal } from "antd";
+import { Spin, Modal, Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import UpdateUserModal from './UpdateUserModal';
 import AddPostModal from "./AddPostModal";
@@ -106,13 +106,33 @@ const UserPage = (props) => {
                   }}
                 >
                   <div>
-                    <button onClick={() => setAddPostModalVisisble(true)}>Add Post</button>
+                    <Button
+                      style={{ marginRight: 5 }}
+                      type="primary"
+                      htmlType="button"
+                      onClick={() => setAddPostModalVisisble(true)}
+                    >
+                      Add Post
+                    </Button>
                   </div>
                   <div>
-                    <button onClick={() => setUpdateUserModalVisible(true)}>Update User</button>
+                    <Button
+                      onClick={() => setUpdateUserModalVisible(true)}
+                      style={{ marginRight: 5 }}
+                      type="primary"
+                      htmlType="button"
+                    >
+                      Update User
+                    </Button>
                   </div>
                   <div>
-                    <button onClick={() => setDeleteUserVisible(true)}>Delete User</button>
+                    <Button
+                      onClick={() => setDeleteUserVisible(true)}
+                      type="primary"
+                      htmlType="button"
+                    >
+                      Delete User
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -228,18 +248,27 @@ const UserPage = (props) => {
                       <span>created: </span>
                       <span><b>{dateFormat(created)}</b></span>
                     </div>
-                    <button onClick={() => {
-                      setPostToDelete({ id, title });
-                      setDeletePostVisible(true)
-                    }}>
+                    <Button
+                      style={{ marginRight: 5 }}
+                      type="primary"
+                      htmlType="button"
+                      onClick={() => {
+                        setPostToDelete({ id, title });
+                        setDeletePostVisible(true)
+                      }}
+                    >
                       Delete Post
-                    </button>
-                    <button onClick={() => {
-                      setCurrentPost({ id, title, description, content, date, city, country, created, user });
-                      setUpdatePostModalVisisble(true);
-                    }}>
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      onClick={() => {
+                        setCurrentPost({ id, title, description, content, date, city, country, created, user });
+                        setUpdatePostModalVisisble(true);
+                      }}
+                    >
                       Update Post
-                    </button>
+                    </Button>
                   </div>
                   <Modal
                     title={`Delete post ${postToDelete?.title}`}
