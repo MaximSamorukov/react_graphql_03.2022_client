@@ -38,7 +38,7 @@ const AddPostModal = (props) => {
           {
             query,
             variables: {
-              userId
+              userId,
             }
           }
         ]}
@@ -133,25 +133,8 @@ const addPost = gql`
   }
 `;
 
-//const query = gql`
-//  {
-//    users {
-//      id,
-//      firstName,
-//      secondName,
-//      occupation,
-//      age,
-//      city,
-//      country,
-//      posts {
-//        id
-//      }
-//    }
-//  }
-//`;
-
 const query = gql`
-  query fetchUser($userId: ID!) {
+  query fetchUser($userId: ID!, $field: String = "created", $sortDirection: String = "desc") {
     user(id: $userId) {
       id,
       firstName,
@@ -160,7 +143,7 @@ const query = gql`
       age,
       city,
       country,
-      posts {
+      posts(field: $field, sortDirection: $sortDirection) {
         id,
         title,
         description,

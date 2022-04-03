@@ -9,18 +9,24 @@ import UpdateUserModal from './UpdateUserModal';
 import AddPostModal from "./AddPostModal";
 import UpdatePostModal from "./UpdatePostModal";
 
-const UserPage = ({ id, data: { loading, user } }) => {
+const UserPage = (props) => {
+  const { id, data: { loading, user } } = props;
   const [ addPostModalVisible, setAddPostModalVisisble ] = useState(false);
   const [ updatePostModalVisible, setUpdatePostModalVisisble ] = useState(false);
-  const [postSortDirection, setPostSortDirection] = useState(false);
+  const [ postSortDirection, setPostSortDirection ] = useState(false);
   const [ currentPost, setCurrentPost ] = useState({});
   const [ postToDelete, setPostToDelete ] = useState(null);
   const [ updateUserModalVisible, setUpdateUserModalVisible ] = useState(false);
   const [ deletePostModalVisible, setDeletePostVisible ] = useState(false);
   const [ deleteUserModalVisible, setDeleteUserVisible ] = useState(false);
   const navigate = useNavigate();
-  const togglePostSortDirection = () => setPostSortDirection((prev) => !prev);
-
+  const togglePostSortDirection = () => {
+    setPostSortDirection((prev) => !prev);
+    props.data.refetch({
+      id,
+      field: 'created',
+      sortDirection: postSortDirection ? 'desc' : 'asc' })
+  };
   if (!loading) {
     const { posts = [] } = user;
     return (
@@ -299,7 +305,7 @@ const UserPage = ({ id, data: { loading, user } }) => {
 }
 
 const query = gql`
-  query fetchUser($id: ID!) {
+  query fetchUser($id: ID!, $field: String  = "created", $sortDirection: String = "desc") {
     user(id: $id) {
       id,
       firstName,
@@ -309,7 +315,7 @@ const query = gql`
       city,
       country,
       created,
-      posts {
+      posts(field: $field, sortDirection: $sortDirection) {
         id,
         title,
         description,
