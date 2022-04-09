@@ -44,13 +44,13 @@ const Header = (props) => {
             <Icon style={{ fontSize: 20, verticalAlign: 'top' }} component={props.sortOptions.sortDirection === 'asc' ? SortAscendingOutlined : SortDescendingOutlined} />
             Sort
           </Button>
-          <Button
+          {/*<Button
             type="primary"
             onClick={() => setVisible(true)}
           >
             <Icon component={SearchOutlined} />
             Search
-          </Button>
+          </Button>*/}
         </Space>
       </div>
       <Modal
